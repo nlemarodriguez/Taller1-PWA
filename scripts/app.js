@@ -11,11 +11,52 @@
         addDialog: document.querySelector('.dialog-container')
     };
 
-    cargarDeSesion();
+    var db;
+
+    //cargarDeSesion();
+    cargarDeIndexDB();
 
     function cargarDeSesion() {
         let tablaEstaciones = sessionStorage.getItem('tabla');
         app.selectedTimetables = JSON.parse(tablaEstaciones);
+    }
+
+    function cargarDeIndexDB() {
+        var request = window.indexedDB.open('estaciones', 1);
+
+        request.onerror = function (event) {
+            // Hacer algo con request.errorCode!
+            alert("Error abriendo DB: " + event.target.errorCode);
+        };
+        request.onsuccess = function (event) {
+            db = request.result;
+            if (!app.selectedTimetables) {
+                app.selectedTimetables = [];
+            }
+            console.log("success: " + db);
+            var objectStore = db.transaction("estaciones").objectStore("estaciones");
+            objectStore.openCursor().onsuccess = function (event) {
+                var cursor = event.target.result;
+
+                if (cursor) {
+                    
+                    app.selectedTimetables.push({ key: cursor.value.key, label: cursor.value.label });
+                    app.getSchedule(cursor.value.key, cursor.value.label);
+                    cursor.continue();
+                } else {
+                    //alert("No more entries!");
+                }
+                
+            };
+        };
+
+        request.onupgradeneeded = function (event) {
+            var db = event.target.result;
+            var objectStore = db.createObjectStore("estaciones",{ keyPath: "id", autoIncrement: true });
+            //F1: Ingresar la estacion por defecto al indexdb
+            objectStore.add({ key: 'metros/1/bastille/A', label: 'Bastille, Direction La Défense' })
+            console.log("crear: " + objectStore);
+        };
     }
 
 
@@ -48,7 +89,8 @@
         app.getSchedule(key, label);
         app.selectedTimetables.push({ key: key, label: label });
         app.toggleAddDialog(false);
-        guardarEnSesion(app.selectedTimetables);
+        //guardarEnSesion(app.selectedTimetables);
+        guardarEnIndexDB(key, label);
     });
 
 
@@ -57,6 +99,12 @@
         if (tabla) {
             sessionStorage.setItem('tabla', tabla);
         }
+    }
+
+    function guardarEnIndexDB(key, label) {
+        var request = db.transaction(["estaciones"], "readwrite")
+            .objectStore("estaciones")
+            .add({ key: key, label: label });
     }
 
     document.getElementById('butAddCancel').addEventListener('click', function () {
@@ -199,7 +247,7 @@
      *   Instead, check out IDB (https://www.npmjs.com/package/idb) or
      *   SimpleDB (https://gist.github.com/inexorabletash/c8069c042b734519680c)
      ************************************************************************/
-
+/* 
     if (app.selectedTimetables) {
         app.selectedTimetables.forEach(function (response) {
             app.getSchedule(response.key, response.label);
@@ -212,5 +260,5 @@
         app.selectedTimetables = [
             { key: initialStationTimetable.key, label: initialStationTimetable.label }
         ];
-    }
+    } */
 })();
