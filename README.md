@@ -43,7 +43,7 @@ Antes
 ![](https://github.com/nlemarodriguez/Taller1-PWA/blob/master/static/lighthouse_antes.png)
 
 
-Después
+Después (ejecutado desde firebase)
 
 ![](https://github.com/nlemarodriguez/Taller1-PWA/blob/master/static/lighthouse_despues.png)
 
