@@ -11,7 +11,7 @@ Para guardar una estación a manera de preferencia cuando un usuario la agrega, 
 ![](https://github.com/nlemarodriguez/Taller1-PWA/blob/master/static/f2.png)
 
 ## F3
-Para guardar la "App Shell" hago uso de del script "service-worker.js" donde se especifican los archivos que se van a guardar y con el método “install” se guardan en el cache:
+Para guardar la "App Shell" hago uso de del script "service-worker.js" donde se especifican los archivos que se van a guardar y con el evento “install” se guardan en el cache:
 
 ![](https://github.com/nlemarodriguez/Taller1-PWA/blob/master/static/f3_1.png)
 
