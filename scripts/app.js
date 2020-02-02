@@ -148,7 +148,7 @@
         var schedules = data.schedules;
         var card = app.visibleCards[key];
 
-       
+
 
         if (!card) {
             var label = data.label.split(', ');
