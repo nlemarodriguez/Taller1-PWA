@@ -137,6 +137,11 @@
 
     app.updateTimetableCard = function (data) {
 
+        if (!data) {
+            // There's no data, skip the update.
+            return;
+        }
+
         // Find out when the element was last updated.
         const cardLastUpdatedElem = card.querySelector('.card-last-updated');
         const cardLastUpdated = cardLastUpdatedElem.textContent;
