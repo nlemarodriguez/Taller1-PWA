@@ -33,7 +33,7 @@
             if (!app.selectedTimetables) {
                 app.selectedTimetables = [];
             }
-            console.log("success: " + db);
+            console.log("Carga exitosa de BD:",db);
             var objectStore = db.transaction("estaciones").objectStore("estaciones");
             objectStore.openCursor().onsuccess = function (event) {
                 var cursor = event.target.result;
@@ -55,7 +55,7 @@
             var objectStore = db.createObjectStore("estaciones", { keyPath: "id", autoIncrement: true });
             //F1: Ingresar la estacion por defecto al indexdb
             objectStore.add({ key: 'metros/1/bastille/A', label: 'Bastille, Direction La Défense' })
-            console.log("crear: " + objectStore);
+            console.log("agregar por defecto:",objectStore);
         };
     }
 
