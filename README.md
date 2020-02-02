@@ -7,12 +7,20 @@ Esto garantiza que se agrega una unica vez esta estacion, posterior a este llama
 
 ## F2
 Para guardar una estacion cuando un usuario la agrega, cree un metodo llamado "guardarEnIndexDB" que es llamado cuando se presiona el boton de agregar, la funcion de este metodo es guardar en IndexDB los datos relacionados con la nueva estacion (script app.js):
+
 ![](https://github.com/nlemarodriguez/Taller1-PWA/blob/master/static/f2.png)
 
 ## F3
-Para guardar la "App Shell" hago uso de 
+Para guardar la "App Shell" hago uso de del script "service-worker.js" donde se especifican los archivos que se van a guardar y con el metodo install se gurdan en el cache:
+
+![](https://github.com/nlemarodriguez/Taller1-PWA/blob/master/static/f3_1.png)
 
 ## F4
+Se usa el service-worker.js para interceptar todos los llamados que contengan la URL: "https://api-ratp.pierre-grimaud.fr/v3/schedules/" cuando son interceptados, estos datos se guardan en un cache difernte al de los datos de la App Shell llamado: data-cache-v1:
+
+![](https://github.com/nlemarodriguez/Taller1-PWA/blob/master/static/f4.png)
+
+De alli en adelante se 
 
 ## F5
 Para integrar nativamente las aplicaciones Android y IOS se crear el script install.js, que permite descargar la aplicacion al dispositivo, tanto para el ambiente web, como el movil. Ademas se adiciona le boton "install" en la parte superior derecha con el fin de gestionar la descarga
