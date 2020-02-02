@@ -11,6 +11,13 @@
         addDialog: document.querySelector('.dialog-container')
     };
 
+    cargarDeSesion();
+
+    function cargarDeSesion() {
+        let tablaEstaciones = sessionStorage.getItem('tabla');
+        app.selectedTimetables = JSON.parse(tablaEstaciones);
+    }
+
 
     /*****************************************************************************
      *
@@ -39,14 +46,27 @@
             app.selectedTimetables = [];
         }
         app.getSchedule(key, label);
-        app.selectedTimetables.push({key: key, label: label});
+        app.selectedTimetables.push({ key: key, label: label });
         app.toggleAddDialog(false);
+        guardarEnSesion(app.selectedTimetables);
     });
+
+
+    function guardarEnSesion(selectedTimetables) {
+        const tabla = JSON.stringify(selectedTimetables);
+        if (tabla) {
+            sessionStorage.setItem('tabla', tabla);
+        }
+    }
 
     document.getElementById('butAddCancel').addEventListener('click', function () {
         // Close the add new station dialog
         app.toggleAddDialog(false);
     });
+
+
+
+
 
 
     /*****************************************************************************
@@ -88,10 +108,10 @@
         card.querySelector('.card-last-updated').textContent = data.created;
 
         var scheduleUIs = card.querySelectorAll('.schedule');
-        for(var i = 0; i<4; i++) {
+        for (var i = 0; i < 4; i++) {
             var schedule = schedules[i];
             var scheduleUI = scheduleUIs[i];
-            if(schedule && scheduleUI) {
+            if (schedule && scheduleUI) {
                 scheduleUI.querySelector('.message').textContent = schedule.message;
             }
         }
@@ -180,8 +200,17 @@
      *   SimpleDB (https://gist.github.com/inexorabletash/c8069c042b734519680c)
      ************************************************************************/
 
-    app.getSchedule('metros/1/bastille/A', 'Bastille, Direction La Défense');
-    app.selectedTimetables = [
-        {key: initialStationTimetable.key, label: initialStationTimetable.label}
-    ];
+    if (app.selectedTimetables) {
+        app.selectedTimetables.forEach(function (response) {
+            app.getSchedule(response.key, response.label);
+
+        })
+
+    } else {
+
+        app.getSchedule('metros/1/bastille/A', 'Bastille, Direction La Défense');
+        app.selectedTimetables = [
+            { key: initialStationTimetable.key, label: initialStationTimetable.label }
+        ];
+    }
 })();
