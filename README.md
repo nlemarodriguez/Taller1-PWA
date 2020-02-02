@@ -36,3 +36,14 @@ La aplicación se encuentra desplegada en “firebase” y puede ser accedida de
 Para probar el uso de workbox se importa la librería y con el método registerRoute se almacena en modo CacheFirst todos los elementos del proyecto, para eso se usa la expresión regular '/.*'
 
 ![](https://github.com/nlemarodriguez/Taller1-PWA/blob/master/static/workbox.png)
+
+## Reportes Lighthouse 
+Antes
+
+![](https://github.com/nlemarodriguez/Taller1-PWA/blob/master/static/lighthouse_antes.png)
+
+
+Después
+
+![](https://github.com/nlemarodriguez/Taller1-PWA/blob/master/static/lighthouse_despues.png)
+
