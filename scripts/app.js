@@ -39,20 +39,20 @@
                 var cursor = event.target.result;
 
                 if (cursor) {
-                    
+
                     app.selectedTimetables.push({ key: cursor.value.key, label: cursor.value.label });
                     app.getSchedule(cursor.value.key, cursor.value.label);
                     cursor.continue();
                 } else {
                     //alert("No more entries!");
                 }
-                
+
             };
         };
 
         request.onupgradeneeded = function (event) {
             var db = event.target.result;
-            var objectStore = db.createObjectStore("estaciones",{ keyPath: "id", autoIncrement: true });
+            var objectStore = db.createObjectStore("estaciones", { keyPath: "id", autoIncrement: true });
             //F1: Ingresar la estacion por defecto al indexdb
             objectStore.add({ key: 'metros/1/bastille/A', label: 'Bastille, Direction La Défense' })
             console.log("crear: " + objectStore);
@@ -136,6 +136,18 @@
     // doesn't already exist, it's cloned from the template.
 
     app.updateTimetableCard = function (data) {
+
+        // Find out when the element was last updated.
+        const cardLastUpdatedElem = card.querySelector('.card-last-updated');
+        const cardLastUpdated = cardLastUpdatedElem.textContent;
+        const lastUpdated = parseInt(cardLastUpdated);
+
+        // If the data on the element is newer, skip the update.
+        if (lastUpdated >= data.currently.time) {
+            return;
+        }
+
+
         var key = data.key;
         var dataLastUpdated = new Date(data.created);
         var schedules = data.schedules;
@@ -177,29 +189,58 @@
      *
      ****************************************************************************/
 
+    function getProgramacionFromInternet(key) {
+        var url = 'https://api-ratp.pierre-grimaud.fr/v3/schedules/' + key;
+        return fetch(url, { method: 'GET' })
+            .then((response) => {
+                return response.json();
+            })
+            .catch(() => {
+                return null;
+            });
+    }
+
+    function getProgramacionFromCache(key) {
+        if (!('caches' in window)) {
+            return null;
+        }
+        var url = 'https://api-ratp.pierre-grimaud.fr/v3/schedules/' + key;
+        return caches.match(url)
+            .then((response) => {
+                if (response) {
+                    return response.json();
+                }
+                return null;
+            })
+            .catch((err) => {
+                console.error('Error getting data from cache', err);
+                return null;
+            });
+    }
 
     app.getSchedule = function (key, label) {
-        var url = 'https://api-ratp.pierre-grimaud.fr/v3/schedules/' + key;
 
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = function () {
-            if (request.readyState === XMLHttpRequest.DONE) {
-                if (request.status === 200) {
-                    var response = JSON.parse(request.response);
-                    var result = {};
-                    result.key = key;
-                    result.label = label;
-                    result.created = response._metadata.date;
-                    result.schedules = response.result.schedules;
-                    app.updateTimetableCard(result);
-                }
-            } else {
-                // Return the initial weather forecast since no data is available.
-                app.updateTimetableCard(initialStationTimetable);
-            }
-        };
-        request.open('GET', url);
-        request.send();
+        getProgramacionFromInternet(key).then((responseJson) => {
+            var result = {};
+            result.key = key;
+            result.label = label;
+            result.created = responseJson._metadata.date;
+            result.schedules = responseJson.result.schedules;
+            app.updateTimetableCard(result);
+        }).catch((err) => {
+            console.error('error trayendo de internet', err);
+        });
+        getProgramacionFromCache(key).then((responseJson) => {
+            var result = {};
+            result.key = key;
+            result.label = label;
+            result.created = responseJson._metadata.date;
+            result.schedules = responseJson.result.schedules;
+            console.log("network:" + result.key);
+            app.updateTimetableCard(result);
+        }).catch((err) => {
+            console.error('error trayendo de cache', err);
+        });
     };
 
     // Iterate all of the cards and attempt to get the latest timetable data
@@ -247,18 +288,18 @@
      *   Instead, check out IDB (https://www.npmjs.com/package/idb) or
      *   SimpleDB (https://gist.github.com/inexorabletash/c8069c042b734519680c)
      ************************************************************************/
-/* 
-    if (app.selectedTimetables) {
-        app.selectedTimetables.forEach(function (response) {
-            app.getSchedule(response.key, response.label);
-
-        })
-
-    } else {
-
-        app.getSchedule('metros/1/bastille/A', 'Bastille, Direction La Défense');
-        app.selectedTimetables = [
-            { key: initialStationTimetable.key, label: initialStationTimetable.label }
-        ];
-    } */
+    /* 
+        if (app.selectedTimetables) {
+            app.selectedTimetables.forEach(function (response) {
+                app.getSchedule(response.key, response.label);
+    
+            })
+    
+        } else {
+    
+            app.getSchedule('metros/1/bastille/A', 'Bastille, Direction La Défense');
+            app.selectedTimetables = [
+                { key: initialStationTimetable.key, label: initialStationTimetable.label }
+            ];
+        } */
 })();
