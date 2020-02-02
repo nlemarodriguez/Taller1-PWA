@@ -142,21 +142,13 @@
             return;
         }
 
-        // Find out when the element was last updated.
-        const cardLastUpdatedElem = card.querySelector('.card-last-updated');
-        const cardLastUpdated = cardLastUpdatedElem.textContent;
-        const lastUpdated = parseInt(cardLastUpdated);
-
-        // If the data on the element is newer, skip the update.
-        if (lastUpdated >= data.currently.time) {
-            return;
-        }
-
 
         var key = data.key;
         var dataLastUpdated = new Date(data.created);
         var schedules = data.schedules;
         var card = app.visibleCards[key];
+
+       
 
         if (!card) {
             var label = data.label.split(', ');
