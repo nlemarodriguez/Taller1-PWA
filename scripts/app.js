@@ -224,6 +224,7 @@
             result.created = responseJson._metadata.date;
             result.schedules = responseJson.result.schedules;
             app.updateTimetableCard(result);
+            console.log("trayendo de internet:", result.key, "schedules:",JSON.stringify(result.schedules));
         }).catch((err) => {
             console.error('error trayendo de internet', err);
         });
@@ -233,10 +234,10 @@
             result.label = label;
             result.created = responseJson._metadata.date;
             result.schedules = responseJson.result.schedules;
-            console.log("network:" + result.key);
+            console.log("trayendo de cache:", result.key, "schedules:",JSON.stringify(result.schedules));
             app.updateTimetableCard(result);
         }).catch((err) => {
-            console.error('error trayendo de cache', err);
+            console.info('No esta disponible en cache');
         });
     };
 
