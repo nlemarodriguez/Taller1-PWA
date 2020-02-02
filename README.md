@@ -10,7 +10,8 @@ Para guardar una estacion cuando un usuario la agrega, cree un metodo llamado "g
 ![](https://github.com/nlemarodriguez/Taller1-PWA/blob/master/static/f2.png)
 
 ## F3
-Para guardar la "App Shell" hago uso de 
+Para guardar la "App Shell" hago uso de del script "service-worker.js" donde se especifican los archivos que se van a guardar y con el metodo install se gurdan en el cache:
+![](https://github.com/nlemarodriguez/Taller1-PWA/blob/master/static/f3_1.png)
 
 ## F4
 
